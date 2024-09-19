@@ -1,3 +1,5 @@
+const { default: mongoose } = require("mongoose");
+
 const Contact = require(process.env.PROJECT_DIR + "/models/contactModel");
 const User = require(process.env.PROJECT_DIR + "/models/userModel");
 
@@ -22,17 +24,12 @@ module.exports.getContact = async (query) => {
 module.exports.createContact = async (contact) => {
     try {
         contact = await contact.save();
-        console.log(contact.user);
         
         await User.findByIdAndUpdate(contact.user,
             {
                 $push: {
                     contacts: contact._id
                 }
-            },
-            {
-                new: true,
-                useFindAndModify: false
             }
         )
         
@@ -53,17 +50,13 @@ module.exports.updateContact = async (query, contact) => {
 
 module.exports.deleteContact = async (query) => {
     try {
-        let contact = Contact.findOne(query);
+        let contact = await Contact.findOne(query);
 
         await User.findByIdAndUpdate(contact.user,
             {
                 $pull: {
-                    contacts: contact._id
+                    contacts:  contact._id
                 }
-            },
-            {
-                new: true,
-                useFindAndModify: false
             }
         )
 

@@ -3,7 +3,7 @@ const utils = require(process.env.PROJECT_DIR + "/utils");
 
 module.exports.getUsers = async () => {
     try {
-        let users = await User.find().populate('contacts');
+        let users = await User.find();
         return users;
     } catch(e) {
         throw Error('Error while query all Users')
@@ -23,7 +23,7 @@ module.exports.createUser = async (user) => {
     try {
         user.password = utils.encrypt(user.password);
     
-        user = new User(req.body);
+        user = new User(user);
 
         return await user.save();
     } catch(e) {
