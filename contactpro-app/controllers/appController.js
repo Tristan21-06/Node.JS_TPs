@@ -1,8 +1,6 @@
 const userService = require(process.env.PROJECT_DIR + "/services/userService");
 
-const {encrypt} = require(process.env.PROJECT_DIR + "/utils/function");
-
-const User = require(process.env.PROJECT_DIR + "/models/userModel");
+const utils = require(process.env.PROJECT_DIR + "/utils");
 
 module.exports.logout = async (req, res) => {
     delete req.session.user;
@@ -21,11 +19,7 @@ module.exports.register = async (req, res) => {
     });
 
     if (properties.length && !errors.length) {
-        req.body.password = encrypt(req.body.password);
-    
-        let user = new User(req.body);
-
-        user = await userService.createUser(user);
+        let user = await userService.createUser(req.body);
         
         req.session.user = user;
         
@@ -49,7 +43,7 @@ module.exports.login = async (req, res) => {
     });
 
     if (properties.length && !errors.length) {
-        req.body.password = encrypt(req.body.password);
+        req.body.password = utils.encrypt(req.body.password);
 
         let user = await userService.getUser(req.body);
                     

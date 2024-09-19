@@ -12,12 +12,13 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get("/", contactController.getContacts);
 router.get("/new", contactController.createContact);
 router.post("/new", contactController.createContact);
 router.get("/edit/:id", contactController.updateContact);
 router.post("/edit/:id", contactController.updateContact);
 router.get("/delete/:id", contactController.deleteContact);
+
 router.get("/:id", contactController.getContact);
+router.get("/", contactController.getContacts);
 
 module.exports = router;

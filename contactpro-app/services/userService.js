@@ -1,4 +1,5 @@
 const User = require(process.env.PROJECT_DIR + "/models/userModel");
+const utils = require(process.env.PROJECT_DIR + "/utils");
 
 module.exports.getUsers = async () => {
     try {
@@ -20,6 +21,10 @@ module.exports.getUser = async (query) => {
 
 module.exports.createUser = async (user) => {
     try {
+        user.password = utils.encrypt(user.password);
+    
+        user = new User(req.body);
+
         return await user.save();
     } catch(e) {
     throw Error('Error while save User')
@@ -28,6 +33,14 @@ module.exports.createUser = async (user) => {
 
 module.exports.updateUser = async (query, user) => {
     try {
+        if(query.password) {
+            if (!query.password.length) {
+                delete query.password;
+            } else {
+                query.password = utils.encrypt(query.password)
+            }
+        }
+
         return await User.updateOne(query, user);
     } catch(e) {
         throw Error('Error while update User')

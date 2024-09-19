@@ -1,7 +1,4 @@
 const userService = require(process.env.PROJECT_DIR + "/services/userService");
-const User = require(process.env.PROJECT_DIR + "/models/userModel");
-const crypto = require("crypto");
-const { encrypt } = require(process.env.PROJECT_DIR + "/utils/function");
 
 module.exports.getUsers = (req, res) => {
     userService.getUsers()
@@ -16,24 +13,12 @@ module.exports.getUser = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-    req.body.password = encrypt(req.body.password)
-
-    let user = new User(req.body);
-
-    userService.createUser(user)
+    userService.createUser(req.body)
         .then((data) => res.status(200).json(data))
         .catch((err) => res.status(400).json(err));
 }
 
 module.exports.updateUser = (req, res) => {
-    if(req.body.password) {
-        if (!req.body.password.length) {
-            delete req.body.password;
-        } else {
-            req.body.password = encrypt(req.body.password)
-        }
-    }
-    
     userService.updateUser({_id: req.params.id}, req.body)
         .then((data) => res.status(200).json(data))
         .catch((err) => res.status(400).json(err));
